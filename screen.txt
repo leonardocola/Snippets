@@ -1,15 +1,14 @@
- 
- 
-$pinvokeCode = @"
+$id = Get-Random
+$largura = 1920
+$altura = 1080
+$code = @"
 using System;
 using System.Runtime.InteropServices;
-namespace Resolution
+
+[StructLayout(LayoutKind.Sequential)]
+public struct DEVMODE1$id
 {
-  [StructLayout(LayoutKind.Sequential)]
-  public struct DEVMODE1
-  {
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-    public string dmDeviceName;
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string dmDeviceName;
     public short dmSpecVersion;
     public short dmDriverVersion;
     public short dmSize;
@@ -28,8 +27,7 @@ namespace Resolution
     public short dmYResolution;
     public short dmTTOption;
     public short dmCollate;
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-    public string dmFormName;
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string dmFormName;
     public short dmLogPixels;
     public short dmBitsPerPel;
     public int dmPelsWidth;
@@ -44,73 +42,48 @@ namespace Resolution
     public int dmReserved2;
     public int dmPanningWidth;
     public int dmPanningHeight;
-  };
+};
+class User_32$id
+{
+    [DllImport("user32.dll")]
+    public static extern int EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE1$id devMode);
+    [DllImport("user32.dll")]
+    public static extern int ChangeDisplaySettings(ref DEVMODE1$id devMode, int flags);
 
-  class User_32
-  {
-    [DllImport("user32.dll")]
-    public static extern int EnumDisplaySettings(string deviceName, int modeNum, ref DEVMODE1 devMode);
-    [DllImport("user32.dll")]
-    public static extern int ChangeDisplaySettings(ref DEVMODE1 devMode, int flags);
     public const int ENUM_CURRENT_SETTINGS = -1;
     public const int CDS_UPDATEREGISTRY = 0x01;
     public const int CDS_TEST = 0x02;
     public const int DISP_CHANGE_SUCCESSFUL = 0;
     public const int DISP_CHANGE_RESTART = 1;
     public const int DISP_CHANGE_FAILED = -1;
-  }
-
-  public class PrmaryScreenResolution
-  {
-    static public string ChangeResolution(int width, int height)
-    {
-      DEVMODE1 dm = GetDevMode1();
-      if (0 != User_32.EnumDisplaySettings(null, User_32.ENUM_CURRENT_SETTINGS, ref dm))
-      {
-        dm.dmPelsWidth = width;
-        dm.dmPelsHeight = height;
-        int iRet = User_32.ChangeDisplaySettings(ref dm, User_32.CDS_TEST);
-        if (iRet == User_32.DISP_CHANGE_FAILED)
-        {
-          return ;
-        }
-        else
-        {
-          iRet = User_32.ChangeDisplaySettings(ref dm, User_32.CDS_UPDATEREGISTRY);
-          switch (iRet)
-          {
-            case User_32.DISP_CHANGE_SUCCESSFUL:
-              {
-                return ;
-              }
-            case User_32.DISP_CHANGE_RESTART:
-              {
-                return;
-              }
-            default:
-              {
-                return ;
-              }
-          }
-        }
-
-      }
-      else
-      {
-        return;
-      }
-    }
-    private static DEVMODE1 GetDevMode1()
-    {
-      DEVMODE1 dm = new DEVMODE1();
-      dm.dmDeviceName = new String(new char[32]);
-      dm.dmFormName = new String(new char[32]);
-      dm.dmSize = (short)Marshal.SizeOf(dm);
-      return dm;
-    }
-  }
 }
+    public class MudarResolucao$id
+    {
+    public static void Main( )
+    {
+        Resolucao();
+    }
+        static void Resolucao() {
+            
+
+            int largura = $largura;
+            int altura = $altura;
+            DEVMODE1$id dm = new DEVMODE1$id();
+            dm.dmDeviceName = new String(new char[32]);
+            dm.dmFormName = new String(new char[32]);
+            dm.dmSize = (short)Marshal.SizeOf(dm);
+
+            if (0 != User_32$id.EnumDisplaySettings(null, User_32$id.ENUM_CURRENT_SETTINGS, ref dm))
+            {
+                dm.dmPelsWidth = largura;
+                dm.dmPelsHeight = altura;
+                int iRet = User_32$id.ChangeDisplaySettings(ref dm, User_32$id.CDS_UPDATEREGISTRY);
+            }
+            }
+        }
+    
 "@
 
-[Resolution.PrmaryScreenResolution]::ChangeResolution(1920,1080) | Out-Null
-
+  
+Add-Type -TypeDefinition $code -Language CSharp	
+Invoke-Expression "[MudarResolucao$id]::Main()"
