@@ -1,0 +1,47 @@
+<style>
+    .heartbeat {
+  width: 500px;
+  height: 100px;
+  border: 2px solid rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  position: relative;
+  margin:0 auto;
+}
+.heartbeat:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  right:0;
+  bottom: 0;
+  margin:0 auto;
+  background: linear-gradient(
+    to right,
+    rgb(255, 255, 255) 0%,
+    rgb(255, 255, 255) 50%,  
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-repeat: repeat-x;
+  background-size:200% 100%;
+  background-position: 0 0;
+  animation: graph 7s linear infinite;
+}
+@keyframes graph {
+  100% {
+    background-position: 500px 0;
+  }
+}
+</style>
+
+<div class="heartbeat">
+    <svg height="100%" width="100%">
+     <polyline fill="none" stroke="black" stroke-width="4" points="10,45 30,45 45,90 50,45 55,45 60,60 80,5 90,90 100,45 115,45 125,5  140,45
+     150,45 180,45 195,45 200,10 205,45 210,90 230,5 240,45 250,45 265,45 275,45 290,45 300,45 310,55
+     320,45 330,5 340,45 350,90 360,45 380,45 400,60 405,45 415,45 420,5 440,45 450,45 465,45 475,45 490,45 500,45">
+   </svg>
+  </div>
+  
+  <body>
+
+    TEXTO 1
+  </body>
